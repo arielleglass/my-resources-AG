@@ -1,9 +1,9 @@
 # my-resources-AG
 
-##R stuff
+R stuff
 
-##Python stuff
+Python stuff
 
-##Genomics stuff
+Genomics stuff
 
-##Image stuff
+Image stuff
