@@ -1,9 +1,10 @@
 # my-resources-AG
 
 R stuff
-fill this out
+[R studio beginner guide](https://education.rstudio.com/learn/beginner/)
 
 Python stuff
+[Python commands] (https://www.interviewbit.com/blog/python-commands/)
 
 Genomics stuff
 
