@@ -1,0 +1,79 @@
+---
+title: "2304novel"
+output: html_document
+date: "2023-04-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+```{r}
+
+data <- read.delim("./2304noveldf.csv", sep=',') 
+  
+data_sum <- data %>%
+  group_by(Substrate, Controls) %>%
+  summarize(mean = mean(CPM), sd = sd(CPM)) %>%
+  filter(!is.na(mean))
+  #mutate(Substrate = factor(Substrate, levels = c("1911 23mer in 3' UTR", "1911 23mer in 5' UTR", "1911 23mer in N Terminal")))
+
+control_order <- c("-SAM", "-Enzyme", "-RNA", "U SUB", "C SUB")
+
+data_sum$Controls <- forcats::fct_relevel(factor(data_sum$Controls), control_order)
+
+
+ggplot(data_sum, aes(x = Controls, y = mean, fill = Substrate)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), 
+                width = 0.2, position = position_dodge(0.9)) +
+  labs(x = "", y = "CPM", fill = "Substrate") +
+  scale_fill_manual(values = c("#364F6B", "#7FB2F0", "#B6B6B6"))+
+scale_x_discrete(limits = c("-SAM", "-Enzyme", "-RNA", "U SUB", "C SUB")) +
+  theme_classic()+
+  theme( axis.ticks.x = element_blank(), 
+         axis.text.x = element_text( size = 10, angle = 45, hjust = 1, color = "black"))+
+  facet_wrap(~Substrate)+
+   ggtitle("rTK2304 Acvitity on Novel RNAs")
+
+
+
+
+    
+
+data_sum
+
+ggsave(file= 'TK2304 1761 novel RNA.pdf', path='./',width =6, height = 4)
+
+
+```
+
+
+
+```{r}
+ data <- read.delim("./2304noveldf.csv", sep=',') %>%
+  filter(Controls == "C SUB")%>%
+  mutate(rep = Tube/5) %>%
+  select(Substrate, CPM, rep)
+  
+
+labels <- c("3 UTR", "3 UTR", "3 UTR", "5 UTR", "5 UTR", "5 UTR", "N Ter", "N Ter", "N Ter")
+data$labels <- labels
+
+substrate_colors <- c("#364F6B", "#7FB2F0", "#B6B6B6")
+
+
+ggplot(data, aes(x = rep, y = CPM, fill = Substrate)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_text(aes(label = labels), position = position_dodge(width = 0.9), vjust = 2, size = 3.5) +
+  labs(x = "Rep", y = "Tube", fill = "Substrate") +
+  ggtitle("rTK2304 on Novel C Subtrate RNA") +
+   theme_classic()+
+  theme(axis.title.x = element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = "none") +
+  scale_fill_manual(values = substrate_colors)
+ 
+
+ggsave(file= 'TK2304 1761 novel RNA C reps.pdf', path='./',width =6, height = 4)
+```
